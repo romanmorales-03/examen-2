@@ -1,40 +1,38 @@
-
-if (!localStorage.getItem("datos")) {
+if (!localStorage.getItem("usuarios")) {
   const lista = [
     { username: "admin", password: "admin.123", nivel: 1 },
     { username: "supervisor", password: "super.123", nivel: 2 },
     { username: "captura", password: "cap.123", nivel: 3 }
   ];
-  localStorage.setItem("datos", JSON.stringify(lista));
+  localStorage.setItem("usuarios", JSON.stringify(lista));
 }
 
-let usuarios = JSON.parse(localStorage.getItem("datos"));
-
 function logo() {
+  const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
 
-  console.log("Ingresado:", username, password);
-  console.log("Usuarios disponibles:", usuarios);
+  if (!username || !password) {
+    alert("Por favor, complete ambos campos.");
+    return;
+  }
 
   const validUser = usuarios.find(
     user => user.username === username && user.password === password
   );
 
   if (!validUser) {
-    alert('¡Usuario y/o contraseña incorrectos!');
+    alert("¡Usuario y/o contraseña incorrectos!");
     return;
   }
 
-  switch (validUser.nivel) {
-    case 1:
-      window.location.href = "admin.html";
-      break;
-    case 2:
-      window.location.href = "supervisor.html";
-      break;
-    case 3:
-      window.location.href = "captura.html";
-      break;
-  }
+  alert(`Bienvenido ${validUser.username} (nivel ${validUser.nivel})`);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('loginform');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    logo();
+  });
+});
